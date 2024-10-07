@@ -2,21 +2,48 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
+import { useDebounce } from "use-debounce";
+
 
 const Home = () => {
+  const [search, setSearch] = useState("");
   const [dataMenu, setDataMenu] = useState([]);
   const [pagination, setPagination] = useState({
     page: 1,
-    perPage: 20,
+    perPage: 6,
     total: null,
     prevPage: null,
     nextPage: null,
   });
 
+  const [debounceSearch] = useDebounce(search, 500);
+
+  const handleDebounce = (e) => {
+    setSearch(e.target.value)
+  }
+ 
+
+  const handleNext = () => {
+    setPagination({
+      ...pagination,
+      page: pagination.page + 1
+    })
+  }
+
+  const handlePrev = () => {
+    setPagination({
+      ...pagination,
+      page: pagination.page - 1
+    })
+  }
+
   const getData = () => {
+    const searchQuery = debounceSearch ? `&name=${debounceSearch}` : "";
+    console.log(`API Request URL: https://api.mudoapi.site/menus?page=${pagination.page}&perPage=${pagination.perPage}${searchQuery}`); // Debug URL
+
     axios
       .get(
-        `https://api.mudoapi.site/menus?page=${pagination.page}&perPage=${pagination.perPage}`
+        `https://api.mudoapi.site/menus?page=${pagination.page}&perPage=${pagination.perPage}${searchQuery}`
       )
       .then((res) => {
         setDataMenu(res.data.data.Data);
@@ -34,8 +61,9 @@ const Home = () => {
   };
 
   useEffect(() => {
+    console.log("debounceSearch:", debounceSearch);
     getData();
-  }, [pagination.page]);
+  }, [pagination.page, debounceSearch]);
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem("access_token");
@@ -65,13 +93,16 @@ const Home = () => {
       <div className="mx-52 flex flex-col gap-2">
         <div className="flex justify-between">
           <div className="flex gap-3">
-            <h1 className="bg-blue-400 px-2 rounded-2xl">Back</h1>
-            <h1 className="bg-blue-400 px-2 rounded-2xl">Next</h1>
+            <button disabled={pagination.page === 1} onClick={handlePrev}  className="bg-blue-400 px-2 rounded-2xl cursor-pointer">Prev</button>
+            <button disabled={pagination.nextPage === 0} onClick={handleNext} className="bg-blue-400 px-2 rounded-2xl cursor-pointer">Next</button>
           </div>
           <div>
             <input
               type="text"
-              placeholder="seacrh"
+              name="search"
+              onChange={handleDebounce}
+              placeholder="search"
+              value={search}
               className="bg-gray-300 pl-5 rounded-3xl"
             />
           </div>
