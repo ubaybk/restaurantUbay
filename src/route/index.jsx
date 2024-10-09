@@ -4,6 +4,8 @@ import Register from "../assets/page/Register";
 import Menu from "../assets/page/Menu";
 import DetailMenu from "../assets/page/DetailMenu";
 import ProtectedRoute from "./ProtectedRoute";
+import AddMenu from "../assets/page/AddMenu";
+import EditMenu from "../assets/page/EditMenu/Index";
 
 export const route = [
   {
@@ -17,6 +19,14 @@ export const route = [
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path:"/addmenu",
+    element:<AddMenu/>
+  },
+  {
+    path:"/editmenu/:id",
+    element:<EditMenu />
   },
   {
     path: "/menu",

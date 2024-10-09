@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { useDebounce } from "use-debounce";
-
+import { BsDatabaseFillAdd } from "react-icons/bs";
 
 const Home = () => {
   const [search, setSearch] = useState("");
@@ -19,27 +19,28 @@ const Home = () => {
   const [debounceSearch] = useDebounce(search, 500);
 
   const handleDebounce = (e) => {
-    setSearch(e.target.value)
-  }
- 
+    setSearch(e.target.value);
+  };
 
   const handleNext = () => {
     setPagination({
       ...pagination,
-      page: pagination.page + 1
-    })
-  }
+      page: pagination.page + 1,
+    });
+  };
 
   const handlePrev = () => {
     setPagination({
       ...pagination,
-      page: pagination.page - 1
-    })
-  }
+      page: pagination.page - 1,
+    });
+  };
 
   const getData = () => {
     const searchQuery = debounceSearch ? `&name=${debounceSearch}` : "";
-    console.log(`API Request URL: https://api.mudoapi.site/menus?page=${pagination.page}&perPage=${pagination.perPage}${searchQuery}`); // Debug URL
+    console.log(
+      `API Request URL: https://api.mudoapi.site/menus?page=${pagination.page}&perPage=${pagination.perPage}${searchQuery}`
+    ); // Debug URL
 
     axios
       .get(
@@ -93,9 +94,28 @@ const Home = () => {
       <div className="mx-52 flex flex-col gap-2">
         <div className="flex justify-between">
           <div className="flex gap-3">
-            <button disabled={pagination.page === 1} onClick={handlePrev}  className="bg-blue-400 px-2 rounded-2xl cursor-pointer">Prev</button>
-            <button disabled={pagination.nextPage === 0} onClick={handleNext} className="bg-blue-400 px-2 rounded-2xl cursor-pointer">Next</button>
+            <button
+              disabled={pagination.page === 1}
+              onClick={handlePrev}
+              className="bg-blue-400 px-2 rounded-2xl cursor-pointer"
+            >
+              Prev
+            </button>
+            <button
+              disabled={pagination.nextPage === 0}
+              onClick={handleNext}
+              className="bg-blue-400 px-2 rounded-2xl cursor-pointer"
+            >
+              Next
+            </button>
           </div>
+          <Link to={"/addmenu"}>
+            <div className="flex justify-center items-center gap-1">
+              <BsDatabaseFillAdd />
+              <h1>tambah menu</h1>
+            </div>
+          </Link>
+
           <div>
             <input
               type="text"

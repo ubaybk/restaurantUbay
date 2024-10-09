@@ -19,14 +19,16 @@ const Login = () => {
     setFormLogin({
       ...formLogin,
       [e.target.name]: e.target.value,
+      
     });
+   
   };
 
   const handleLogin = () => {
-    const payload = formLogin;
+  
 
     axios
-      .post("https://api.mudoapi.site/login", payload)
+      .post("https://api.mudoapi.site/login", formLogin)
       .then((res) => {
         console.log(res);
         const token = res.data.data.token;
